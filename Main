@@ -1,0 +1,91 @@
+package com.company;
+
+import javax.swing.*;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.Scanner;
+
+public class Main {
+
+    public Main() throws IOException {
+        // Läser från filen Medlemmar.txt
+        Path inFil = Paths.get("C:\\Users\\Daniel Bernhardt\\IdeaProjects\\BestGymEver\\src\\com\\company\\Medlemmar.txt");
+        LocalDate datum = LocalDate.now();
+        String aYearAgo = datum.minusYears(1).toString();
+        String input = JOptionPane.showInputDialog("Ange Namn och Efternamn!");
+        String[] person;
+        String andraRadenDatum;
+        boolean check = false;
+
+
+        if (input == null) {
+            JOptionPane.showMessageDialog(null, "Avbrutet program!");
+            System.exit(0);
+
+        } else if (input.equals("")) {
+            JOptionPane.showMessageDialog(null, "Vänligen, skriv in förnamn och efternamn!");
+            System.exit(0);
+        }
+        // Skriver till ny fil.
+        try (PrintWriter pw = new PrintWriter
+                (new BufferedWriter                           // append: true, gör att det man skickar till filen sparas och överskriver inte det som redan finns i den filen.
+                (new FileWriter("AktivaMedlemmar.txt", true)))) {
+
+            Scanner sc = new Scanner(inFil);
+
+            // "Loopar" letar, tills filen är tom.
+            while (sc.hasNext()) {
+
+                person = sc.nextLine().split(", ");
+
+                andraRadenDatum = sc.nextLine();
+
+                // ifall datumet för senaste betalningen är mer eller = för ett år sedan är medlemmen aktiv.
+                if (Integer.parseInt(andraRadenDatum.replaceAll("-", "")) >= (Integer.parseInt(aYearAgo.replaceAll("-", "")))) {
+                    if (input.equals(person[0]) || input.equalsIgnoreCase(person[1].trim())) {
+
+                        check = true;
+                        JOptionPane.showMessageDialog(null, "\nMedlemmen är aktiv!" + "\n" + person[1].trim() + "\n" + person[0]);
+                        pw.printf("%s" + ",%s" + "\nSenast aktiv: " + "%s" + "\n", person[0], person[1], datum);
+
+                    }
+                }
+                // ifall datumet för senaste betalningen är mer än ett år sedan är medlemmen inte aktiv.
+                if (Integer.parseInt(andraRadenDatum.replaceAll("-", "")) < Integer.parseInt(aYearAgo.replaceAll("-", ""))) {
+                    if (input.equals(person[0]) || input.equalsIgnoreCase(person[1].trim())) {
+
+                        check = true;
+                        JOptionPane.showMessageDialog(null, "Inget medlemskap!" + "\n" + person[0] + person[1]);
+                    }
+
+                }
+
+
+            }
+            // Stänger scannern.
+            sc.close();
+
+
+            if (!check) {
+                JOptionPane.showMessageDialog(null, "Obehörig " + "\n"+ input + " har aldrig varit medlem!");
+            }
+
+        }catch (FileNotFoundException e){
+            JOptionPane.showMessageDialog(null, "Kunde inte skriva till filen!");
+            e.printStackTrace();
+        }catch (IOException e){
+            JOptionPane.showMessageDialog(null, "Kunde ej hitta filen!");
+            e.printStackTrace();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Något annat gick fel!");
+            e.printStackTrace();
+        }
+
+    }
+
+            public static void main(String[] args) throws IOException{
+        new Main();
+    }
+}
