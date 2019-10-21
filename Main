@@ -42,7 +42,7 @@ public class Main {
 
                 andraRadenDatum = sc.nextLine();
 
-                // ifall datumet för senaste betalningen är mer eller = för ett år sedan är medlemmen aktiv.
+                // ifall datumet för senaste betalningen är mindre eller = för ett år sedan är medlemmen aktiv.
                 if (Integer.parseInt(andraRadenDatum.replaceAll("-", "")) >= (Integer.parseInt(aYearAgo.replaceAll("-", "")))) {
                     if (input.equals(person[0]) || input.equalsIgnoreCase(person[1].trim())) {
 
